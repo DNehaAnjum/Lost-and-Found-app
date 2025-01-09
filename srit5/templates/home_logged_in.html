@@ -1,0 +1,126 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5 fw-bold">Lost & Found Dashboard</h1>
+            <p class="lead">Welcome to SRIT Lost & Found. Report lost items or help others find their belongings.</p>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title">
+                        <i class="fas fa-search text-primary me-2"></i>Report Lost Item
+                    </h2>
+                    <p class="card-text">Lost something on campus? Report it here and we'll help you find it.</p>
+                    <a href="{{ url_for('routes.report_item_route', item_type='lost') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Report Lost Item
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title">
+                        <i class="fas fa-hand-holding-heart text-success me-2"></i>Found Something?
+                    </h2>
+                    <p class="card-text">Found an item? Report it here to help others recover their belongings.</p>
+                    <a href="{{ url_for('routes.report_item_route', item_type='found') }}" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>Report Found Item
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Recent Activity</h2>
+                    {% if items_with_matches %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Item Name</th>
+                                        <th>Category</th>
+                                        <th>Location</th>
+                                        <th>Date Reported</th>
+                                        <th>Photo</th>
+                                        <th>Potential Matches</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item_data in items_with_matches %}
+                                    {% set item = item_data.item %}
+                                    <tr>
+                                        <td>
+                                            {% if item.type == 'lost' %}
+                                                <span class="badge bg-danger">
+                                                    <i class="fas fa-search"></i> Lost
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-hand-holding-heart"></i> Found
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ item.name }}</td>
+                                        <td>{{ item.category }}</td>
+                                        <td>{{ item.location }}</td>
+                                        <td>{{ item.date_reported.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>
+                                            {% if item.photo_url %}
+                                                <img src="{{ url_for_uploaded_file(item.photo_url) }}" 
+                                                     alt="Item photo" 
+                                                     class="img-thumbnail" 
+                                                     style="max-width: 50px;">
+                                            {% else %}
+                                                <span class="text-muted">No photo</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if item_data.matches %}
+                                                {% for match in item_data.matches %}
+                                                    <span class="badge bg-{{ 'success' if match.score >= 80 else 'warning' if match.score >= 65 else 'info' }}">
+                                                        {{ match.confidence }} Match ({{ match.score }}%)
+                                                    </span><br>
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="text-muted">No matches yet</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{{ url_for('routes.view_matches_route', item_id=item.id) }}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-search me-1"></i>
+                                                View Matches
+                                                {% if item_data.matches %}
+                                                    <span class="badge bg-{{ 'success' if item_data.matches[0].score >= 80 else 'warning' if item_data.matches[0].score >= 65 else 'info' }} ms-1">
+                                                        {{ item_data.matches|length }}
+                                                    </span>
+                                                {% endif %}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-5">No recent activity to display.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

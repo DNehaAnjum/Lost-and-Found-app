@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="landing-content">
+    <div class="landing-header text-center">
+        <h1 class="display-4 fw-bold">SRIT Lost & Found</h1>
+        <p class="lead mb-4">Find what you've lost or help others find their belongings</p>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="features mb-5">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="feature-card">
+                                    <i class="fas fa-search fa-3x mb-3"></i>
+                                    <h3>Report Lost Items</h3>
+                                    <p>Quickly report items you've lost on campus</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="feature-card">
+                                    <i class="fas fa-hand-holding-heart fa-3x mb-3"></i>
+                                    <h3>Found Something?</h3>
+                                    <p>Help others by reporting items you've found</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="feature-card">
+                                    <i class="fas fa-qrcode fa-3x mb-3"></i>
+                                    <h3>Quick Login</h3>
+                                    <p>Scan QR code for instant access</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <a href="{{ url_for('routes.home_logged_in_route') }}" class="btn btn-success btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>Log in with College Email
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
